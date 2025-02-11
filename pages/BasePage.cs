@@ -35,6 +35,13 @@ namespace NUnitFrameworkDesign.pages
         {
             Thread.Sleep(1000);
         }
-	}
+
+        public CartPage goToCartPage()
+        {
+            btnCart.Click();
+            CartPage cartPage = new CartPage(driver);
+            return cartPage;
+        }
+    }
 
 }
