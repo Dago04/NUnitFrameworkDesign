@@ -13,11 +13,17 @@ namespace NUnitFrameworkDesign.tests
 {
     public class BaseTest
     {
-        protected IWebDriver driver;
+
+
+        //protected IWebDriver driver;
         private IConfigurationRoot config;
         private static ExtentReports extent;
         private ExtentTest test;
 
+        // WebDriver aislado por hilo para pruebas en paralelo
+        private static ThreadLocal<IWebDriver> threadDriver = new();
+        public static IWebDriver Driver => threadDriver.Value;
+    
         [SetUp]
         public void Setup()
         {
@@ -42,9 +48,14 @@ namespace NUnitFrameworkDesign.tests
             bool isHeadless = bool.Parse(config["Headless"]);
 
             // Iniciar el navegador
-            driver = InitializeDriver(browserName, isHeadless);
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            driver.Manage().Window.Maximize();
+            //driver = InitializeDriver(browserName, isHeadless);
+            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            //driver.Manage().Window.Maximize();
+
+            // Inicializar el WebDriver y asignarlo a threadDriver
+            threadDriver.Value = InitializeDriver(browserName, isHeadless);
+            threadDriver.Value.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            threadDriver.Value.Manage().Window.Maximize();
 
             test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
         }
@@ -65,9 +76,12 @@ namespace NUnitFrameworkDesign.tests
                 test.Pass(TestContext.CurrentContext.Result.Message + "Test passed");
             }
 
-            // Cerrar el navegador
-            driver.Close();
-            driver.Quit();
+            // Cerrar el WebDriver después de cada prueba
+            if (threadDriver.Value != null)
+            {
+                threadDriver.Value.Quit();
+                threadDriver.Value = null; // Limpiar
+            }
         }
         [OneTimeSetUp]
         public void InitializeReport()
@@ -148,7 +162,7 @@ namespace NUnitFrameworkDesign.tests
             testCaseName = SanitizeFileName(testCaseName);
 
             // Tomar la captura de pantalla
-            ITakesScreenshot screenshotDriver = driver as ITakesScreenshot;
+            ITakesScreenshot screenshotDriver = threadDriver.Value as ITakesScreenshot;
             if (screenshotDriver == null)
             {
                 throw new InvalidOperationException("Driver no soporta capturas de pantalla.");

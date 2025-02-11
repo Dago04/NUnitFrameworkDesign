@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NUnitFrameworkDesign")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f655c033f3a18687b808420c8259fff0e9c3f4c1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e8d9db4173580f07c2bffa8d5bfa5528596d4917")]
 [assembly: System.Reflection.AssemblyProductAttribute("NUnitFrameworkDesign")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NUnitFrameworkDesign")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

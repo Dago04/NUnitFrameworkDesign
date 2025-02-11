@@ -206,6 +206,7 @@ E:\NUnitFrameworkDesign\obj\Debug\net8.0\NUnitFrameworkDesign.GeneratedMSBuildEd
 E:\NUnitFrameworkDesign\obj\Debug\net8.0\NUnitFrameworkDesign.AssemblyInfoInputs.cache
 E:\NUnitFrameworkDesign\obj\Debug\net8.0\NUnitFrameworkDesign.AssemblyInfo.cs
 E:\NUnitFrameworkDesign\obj\Debug\net8.0\NUnitFrameworkDesign.csproj.CoreCompileInputs.cache
+E:\NUnitFrameworkDesign\obj\Debug\net8.0\NUnitFrameworkDesign.sourcelink.json
 E:\NUnitFrameworkDesign\obj\Debug\net8.0\NUnitFra.D5366484.Up2Date
 E:\NUnitFrameworkDesign\obj\Debug\net8.0\NUnitFrameworkDesign.dll
 E:\NUnitFrameworkDesign\obj\Debug\net8.0\refint\NUnitFrameworkDesign.dll

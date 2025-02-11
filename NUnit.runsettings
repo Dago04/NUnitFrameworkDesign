@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<NUnit>
+		<!-- Incluir ambas categorías -->
+		<TestCategories>
+			<Include>ErrorValidation</Include>
+		</TestCategories>
+
+		<!-- Configuración de paralelismo -->
+		<NumberOfTestWorkers>4</NumberOfTestWorkers>
+
+		<!-- Definir la estrategia de ejecución en paralelo -->
+		<DefaultTestExecutionStrategy>Parallel</DefaultTestExecutionStrategy>
+	</NUnit>
+
+	
+</RunSettings>

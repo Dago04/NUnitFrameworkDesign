@@ -39,6 +39,13 @@ namespace NUnitFrameworkDesign.pages
                 .FirstOrDefault(product => product.FindElement(By.TagName("b")).Text.Trim().Equals(productName, StringComparison.OrdinalIgnoreCase));
         }
 
+        public bool verifyProductName(string productName)
+        {
+            return getProductList()
+                .Any(product => product.FindElement(By.TagName("b")).Text.Trim().Equals(productName, StringComparison.OrdinalIgnoreCase));
+
+        }
+
 
         /// <summary>
         /// Agrega un producto al carrito de compras basado en su nombre.

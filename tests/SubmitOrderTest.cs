@@ -4,17 +4,19 @@ using NUnitFrameworkDesign.pages;
 
 namespace NUnitFrameworkDesign.tests
 {
+    [TestFixture]
     public class SubmitOrderTest : BaseTest
     {
 
         [Test, TestCaseSource(typeof(purchaseOrderReader), nameof(purchaseOrderReader.GetTestData))]
+        [Category("Purchase")]
         public void submitOrder(string email, string password, string productName)
         {
             try
             {
                 string countryName = "Costa Rica";
 
-                LandingPage landingPage = new LandingPage(driver);
+                LandingPage landingPage = new LandingPage(Driver);
                 landingPage.goTo();
 
                 ProductCatalogue productCatalogue = landingPage.loginApplication(email, password);
@@ -42,7 +44,8 @@ namespace NUnitFrameworkDesign.tests
             {
                 Assert.Fail(ex.Message);
             }
-
         }
     }
+
+
 }
