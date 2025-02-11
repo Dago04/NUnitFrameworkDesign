@@ -23,7 +23,11 @@ namespace NUnitFrameworkDesign.tests
         // WebDriver aislado por hilo para pruebas en paralelo
         private static ThreadLocal<IWebDriver> threadDriver = new();
         public static IWebDriver Driver => threadDriver.Value;
-    
+
+        /// <summary>
+        /// Configura el entorno de prueba antes de ejecutar cada test.
+        /// </summary>
+        /// <exception cref="FileNotFoundException">Lanza una excepción si el archivo de configuración no se encuentra.</exception>
         [SetUp]
         public void Setup()
         {
@@ -31,6 +35,7 @@ namespace NUnitFrameworkDesign.tests
             string projectRoot = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
             string configPath = Path.Combine(projectRoot, "data", "appsettings.json");
 
+            // Verifica si el archivo de configuración existe
             if (!File.Exists(configPath))
             {
                 throw new FileNotFoundException($"No se encontró el archivo de configuración en: {configPath}");
@@ -47,52 +52,71 @@ namespace NUnitFrameworkDesign.tests
             string browserName = config["browser"];
             bool isHeadless = bool.Parse(config["Headless"]);
 
-            // Iniciar el navegador
-            //driver = InitializeDriver(browserName, isHeadless);
-            //driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            //driver.Manage().Window.Maximize();
-
-            // Inicializar el WebDriver y asignarlo a threadDriver
+            // Inicializar el WebDriver y asignarlo a `threadDriver`
             threadDriver.Value = InitializeDriver(browserName, isHeadless);
+
+            // Configurar el tiempo de espera implícito y maximizar la ventana del navegador
             threadDriver.Value.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             threadDriver.Value.Manage().Window.Maximize();
 
+            // Crear un nuevo test en el reporte de ExtentReports con el nombre del test actual
             test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
         }
+        /// <summary>
+        /// Finaliza la ejecución de cada prueba, captura una captura de pantalla en caso de fallo y cierra el WebDriver.
+        /// </summary>
         [TearDown]
         public void Teardown()
         {
-            // Verifica si la prueba falló y captura la pantalla
+            // Verifica si la prueba falló
             if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
             {
-                // Captura la pantalla
+                // Captura la pantalla y guarda la imagen con el nombre de la prueba
                 string screenshotPath = GetScreenshot(TestContext.CurrentContext.Test.Name);
 
-                // Agregar la captura al reporte
-                test.Fail(TestContext.CurrentContext.Result.Message).AddScreenCaptureFromPath(screenshotPath);
+                // Agrega la captura de pantalla al reporte de ExtentReports con el mensaje de error
+                test.Fail(TestContext.CurrentContext.Result.Message)
+                    .AddScreenCaptureFromPath(screenshotPath);
             }
             else
             {
-                test.Pass(TestContext.CurrentContext.Result.Message + "Test passed");
+                // Registra la prueba como exitosa en el reporte
+                test.Pass(TestContext.CurrentContext.Result.Message + " Test passed");
             }
 
-            // Cerrar el WebDriver después de cada prueba
+            // Cerrar el WebDriver después de cada prueba para liberar recursos
             if (threadDriver.Value != null)
             {
                 threadDriver.Value.Quit();
-                threadDriver.Value = null; // Limpiar
+                threadDriver.Value = null; // Limpiar el valor del ThreadLocal
             }
         }
+        /// <summary>
+        /// Inicializa el objeto de reportería ExtentReports antes de ejecutar cualquier prueba en la suite.
+        /// </summary>
         [OneTimeSetUp]
         public void InitializeReport()
         {
+            // Obtiene y asigna el objeto ExtentReports para generar reportes de pruebas
             extent = GetReporterObject();
         }
+        /// <summary>
+        /// Finaliza y guarda el reporte de pruebas generado por ExtentReports.
+        /// Se ejecuta una única vez después de que todas las pruebas han finalizado.
+        /// </summary>
         [OneTimeTearDown]
         public void FinalizeReport()
         {
+            // Guarda y cierra el reporte generado por ExtentReports
             extent.Flush();
         }
+        /// <summary>
+        /// Inicializa el WebDriver según el navegador especificado y su modo de ejecución (headless o no).
+        /// </summary>
+        /// <param name="browserName">Nombre del navegador (chrome, firefox, edge).</param>
+        /// <param name="isHeadless">Indica si el navegador debe ejecutarse en modo headless.</param>
+        /// <returns>Una instancia de IWebDriver configurada para el navegador especificado.</returns>
+        /// <exception cref="ArgumentException">Lanza una excepción si el navegador no está soportado.</exception>
         private IWebDriver InitializeDriver(string browserName, bool isHeadless)
         {
             if (browserName.Equals("chrome", StringComparison.OrdinalIgnoreCase))
@@ -122,6 +146,10 @@ namespace NUnitFrameworkDesign.tests
                 throw new ArgumentException($"El navegador '{browserName}' no está soportado.");
             }
         }
+        /// <summary>
+        /// Obtiene o crea una instancia de ExtentReports para la generación de reportes de pruebas automatizadas.
+        /// </summary>
+        /// <returns>Una instancia de <see cref="ExtentReports"/> configurada.</returns>
         public static ExtentReports GetReporterObject()
         {
             if (extent == null)
@@ -161,6 +189,9 @@ namespace NUnitFrameworkDesign.tests
             // Limpiar el nombre del archivo de caracteres no válidos
             testCaseName = SanitizeFileName(testCaseName);
 
+            // Agregar timestamp y ThreadId para asegurar que el nombre sea único
+            testCaseName = $"{testCaseName}_{DateTime.Now:yyyyMMdd_HHmmss}_{Thread.CurrentThread.ManagedThreadId}";
+
             // Tomar la captura de pantalla
             ITakesScreenshot screenshotDriver = threadDriver.Value as ITakesScreenshot;
             if (screenshotDriver == null)
@@ -189,6 +220,7 @@ namespace NUnitFrameworkDesign.tests
             // Retornar la ruta de la captura de pantalla
             return screenshotPath;
         }
+
         public string SanitizeFileName(string fileName)
         {
             // Reemplaza los caracteres no válidos en Windows para nombres de archivos
