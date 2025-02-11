@@ -34,19 +34,7 @@ En la carpeta `data`, actualiza `appsettings.json` con los valores correctos:
 }
 ```
 
-## 📁 Estructura del Proyecto
-```bash
-src/
- ├── main/java/
- │   ├── abstractComponent/       # Componentes reutilizables
- │   ├── pageObject/              # Clases de páginas (POM)
- │   ├── resources/               # Recursos compartidos
- │
- ├── test/java/
- │   ├── data/                    # Archivos de configuración y datos de prueba
- │   ├── testComponent/            # Componentes específicos para pruebas
- │   ├── tests/                    # Casos de prueba
-```
+
 
 ## 🏃‍♂️ Ejecutar las Pruebas
 
