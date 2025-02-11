@@ -52,23 +52,3 @@ Ejecutar pruebas **con configuración personalizada**:
 ```sh
     dotnet test --settings NUnit.runsettings
 ```
-
-## ⚡ Ejecución en Paralelo
-Para ejecutar pruebas en paralelo, asegurarse de:
-- Definir `[Parallelizable(ParallelScope.All)]` en las clases de prueba.
-- Configurar `NumberOfTestWorkers` en el archivo `NUnit.runsettings`:
-
-```xml
-<RunSettings>
-  <NUnit>
-    <NumberOfTestWorkers>4</NumberOfTestWorkers>
-  </NUnit>
-</RunSettings>
-```
-
-Ejecutar en paralelo:
-```sh
-    dotnet test --settings NUnit.runsettings
-```
-
----
