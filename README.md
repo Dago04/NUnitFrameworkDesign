@@ -72,6 +72,3 @@ Ejecutar en paralelo:
 ```
 
 ---
-
-📌 **Autor:** Tu Nombre  
-📌 **Repositorio:** [GitHub](https://github.com/tu_usuario/NUnitFrameworkDesign)
