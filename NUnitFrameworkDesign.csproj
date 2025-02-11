@@ -33,8 +33,4 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="utils\" />
-  </ItemGroup>
-
 </Project>

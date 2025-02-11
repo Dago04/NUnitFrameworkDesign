@@ -8,33 +8,41 @@ namespace NUnitFrameworkDesign.tests
     {
 
         [Test, TestCaseSource(typeof(purchaseOrderReader), nameof(purchaseOrderReader.GetTestData))]
-        public void submitOrder(string email,string password,string productName)
+        public void submitOrder(string email, string password, string productName)
         {
-            string countryName = "Costa Rica";
+            try
+            {
+                string countryName = "Costa Rica";
 
-            LandingPage landingPage = new LandingPage(driver);
-            landingPage.goTo();
+                LandingPage landingPage = new LandingPage(driver);
+                landingPage.goTo();
 
-            ProductCatalogue productCatalogue = landingPage.loginApplication(email, password);
-            productCatalogue.addProductToCar(productName);
+                ProductCatalogue productCatalogue = landingPage.loginApplication(email, password);
+                productCatalogue.addProductToCar(productName);
 
-            CartPage cartPage = productCatalogue.goToCartPage();
+                CartPage cartPage = productCatalogue.goToCartPage();
 
-            bool match = cartPage.verifyProductDisplay(productName);
+                bool match = cartPage.verifyProductDisplay(productName);
 
-            Assert.That(match, Is.True, "Product not found in cart");
+                Assert.That(match, Is.True, "Product not found in cart");
 
-            CheckOutPage checkOutPage = cartPage.goToCheckOut();
+                CheckOutPage checkOutPage = cartPage.goToCheckOut();
 
-            checkOutPage.selectCountry(countryName);
+                checkOutPage.selectCountry(countryName);
 
-            ConfirmationPage confirmationPage = checkOutPage.submitOrder();
+                ConfirmationPage confirmationPage = checkOutPage.submitOrder();
 
-            string confirmationMessage =  confirmationPage.getConfirmMessageText();
+                string confirmationMessage = confirmationPage.getConfirmMessageText();
 
-            Assert.That(confirmationMessage, Is.EqualTo("THANKYOU FOR THE ORDER."), "Order confirmation message is incorrect");
+                Assert.That(confirmationMessage, Is.EqualTo("THANKYOU FOR THE ORDER."), "Order confirmation message is incorrect");
 
-            Thread.Sleep(2000);
+                Thread.Sleep(2000);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+
         }
     }
 }
